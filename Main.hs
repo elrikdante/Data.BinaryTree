@@ -25,15 +25,13 @@ readsTree s = do
   (x, t) <- reads s
   return (Node x,t)
 
-readsTrees :: String -> Network a
+readsTrees             :: Read a => String -> Network a
 readsTrees ""          = []
 readsTrees enc'Network = do
-  tree <- readsTree enc'tree
-  fst tree : readsTrees enc'trees
+  (tree, _) <- readsTree enc'tree
+  tree : (readsTrees $ unlines enc'trees)
   where
     (enc'tree:enc'trees) = lines enc'Network
-
-
 
 t :: Tree Int
 t = Branch
@@ -44,6 +42,8 @@ t = Branch
       (Node 6)
      )
     )
-t'enc  = showTree t
-t'dec :: [(Tree Int, String)]
-t'dec  = readsTree t'enc
+
+t'dec    :: [(Tree Int, String)]
+t'dec    = readsTree t'enc
+t'enc    = showTree t
+networks = [t'enc]
