@@ -4,11 +4,11 @@ module Data.BinaryTree.Main where
 
 data Tree a  = Node a | Branch (Tree a) (Tree a)
 
-showTree              :: Show a =>Tree a -> String
-showTree (Node x)     = show x
-showTree (Branch l r) = "<" ++ showTree l ++ "|" ++ showTree r ++ ">"
+showTree               :: Show a =>Tree a -> String
+showTree (Node x)      = show x
+showTree (Branch l r)  = "<" ++ showTree l ++ "|" ++ showTree r ++ ">"
 
-showsTree              :: Show a => Tree a -> String -> String
+showsTree              :: Show a => Tree a -> ShowS
 showsTree (Node x)     = shows x
 showsTree (Branch l r) = ('<':) . showsTree l . ('|':) . showsTree r . ('>':)
 
