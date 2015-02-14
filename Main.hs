@@ -1,14 +1,15 @@
--- |
+-- |authour: Dante Elrik
 
 module Data.BinaryTree.Main where
+import Data.List (intersperse)
+import Prelude hiding (join) -- future proofing =)
 
 data Tree a  = Node a | Branch (Tree a) (Tree a)
 
 type Network a = [Tree a]
 
-xshowTree               :: Show a =>Tree a -> String
-xshowTree (Node x)      = show x
-xshowTree (Branch l r)  = "<" ++ showTree l ++ "|" ++ showTree r ++ ">"
+join :: [a] -> [[a]] -> [a]
+join delim l = concat (intersperse delim l)
 
 showsTree              :: Show a => Tree a -> ShowS
 showsTree (Node x)     = shows x
@@ -21,17 +22,15 @@ readsTree ('<':s)  = do
   (l, '|':ls) <- readsTree s
   (r, '>':u)  <- readsTree ls
   return (Branch l r,u)
-readsTree s = do
+readsTree s        = do
   (x, t) <- reads s
   return (Node x,t)
 
 readsTrees             :: Read a => String -> Network a
 readsTrees ""          = []
 readsTrees enc'Network = do
-  (tree, _) <- readsTree enc'tree
-  tree : (readsTrees $ unlines enc'trees)
-  where
-    (enc'tree:enc'trees) = lines enc'Network
+  (tree, ('\n':enc'trees)) <- readsTree enc'Network
+  tree : (readsTrees enc'trees)
 
 t :: Tree Int
 t = Branch
@@ -43,7 +42,8 @@ t = Branch
      )
     )
 
-t'dec    :: [(Tree Int, String)]
-t'dec    = readsTree t'enc
-t'enc    = showTree t
-networks = [t'enc]
+t'dec     :: [(Tree Int, String)]
+t'dec     = readsTree t'enc
+t'enc     = showTree t
+network   :: Int -> String
+network s = join "\n" $ take s $ repeat t'enc
