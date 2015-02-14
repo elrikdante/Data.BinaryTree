@@ -4,11 +4,11 @@ module Data.BinaryTree.Main where
 import Data.List (intersperse)
 import Prelude hiding (join) -- future proofing =)
 
-data Tree a  = Node a | Branch (Tree a) (Tree a)
-
+data Tree a    = Node a
+               | Branch (Tree a) (Tree a)
 type Network a = [Tree a]
 
-join :: [a] -> [[a]] -> [a]
+join         :: [a] -> [[a]] -> [a]
 join delim l = concat (intersperse delim l)
 
 showsTree              :: Show a => Tree a -> ShowS
@@ -26,11 +26,11 @@ readsTree s        = do
   (x, t) <- reads s
   return (Node x,t)
 
-readsTrees             :: Read a => String -> Network a
-readsTrees ""          = []
-readsTrees enc'Network = do
+readsNetwork             :: Read a => String -> Network a
+readsNetwork ""          = []
+readsNetwork enc'Network = do
   (tree, ('\n':enc'trees)) <- readsTree enc'Network
-  tree : (readsTrees enc'trees)
+  tree : (readsNetwork enc'trees)
 
 t :: Tree Int
 t = Branch
