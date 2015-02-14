@@ -8,9 +8,9 @@ showTree              :: Show a =>Tree a -> String
 showTree (Node x)     = show x
 showTree (Branch l r) = "<" ++ showTree l ++ "|" ++ showTree r ++ ">"
 
-showsTree                :: Show a => Tree a -> String -> String
-showsTree (Node x) s     = shows x s
-showsTree (Branch l r) s = '<' : showsTree l ('|' : showsTree r ('>' : s))
+showsTree              :: Show a => Tree a -> String -> String
+showsTree (Node x)     = shows x
+showsTree (Branch l r) = ('<':) . showsTree l . ('|':) . showsTree r . ('>':)
 
 t :: Tree Int
 t = Branch
