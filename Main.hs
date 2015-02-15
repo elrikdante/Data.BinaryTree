@@ -3,6 +3,7 @@
 module Data.BinaryTree.Main where
 import Data.List (intersperse)
 import Prelude hiding (join) -- future proofing =)
+import Data.Maybe
 
 data Tree a    = Node a
                | Branch (Tree a) (Tree a)
@@ -32,6 +33,10 @@ readsNetwork enc'Network = do
   (tree, ('\n':enc'trees)) <- readsTree enc'Network
   tree : (readsNetwork enc'trees)
 
+fringe               :: Num a => Tree a -> a
+fringe (Branch l r)  = fringe l + fringe r
+fringe (Node x)      = x
+
 t :: Tree Int
 t = Branch
     (Node 1)
@@ -45,5 +50,7 @@ t = Branch
 t'dec     :: [(Tree Int, String)]
 t'dec     = readsTree t'enc
 t'enc     = showTree t
+
+[(b,_)]   = t'dec
 network   :: Int -> String
 network s = join "\n" $ take s $ repeat t'enc
